@@ -11,6 +11,7 @@ export default function App() {
     const title = route.params.title
     const description = route.params.description
     const id = route.params.id
+    const date = route.params.date
 
     const [newTitle, setNewTitle] = useState(title)
     const [newDescription, setNewDescription] = useState(description)
@@ -110,7 +111,7 @@ export default function App() {
           </TouchableOpacity> 
           : null
         }
-          
+          <Text>Gratidão do dia {date}</Text>
 
           
         </View>

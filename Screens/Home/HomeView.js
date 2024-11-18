@@ -40,6 +40,11 @@ export default function App() {
       };
 
       const randomButtonPressed = () => {
+        if (gratitutes.length == 0) {
+          Alert.alert("Ainda não temos gratidão para sortear...", "Adicione a sua primeira gratidão ☺️")
+          return
+        } 
+
         const randomIndex = Math.floor(Math.random() * gratitutes.length);
         const randomGratitude = gratitutes[randomIndex]
 
@@ -79,7 +84,7 @@ export default function App() {
             </View>
             
             {
-              gratitutes != [] ? 
+              gratitutes.length > 0 ? 
               <FlatList
               data={gratitutes}
               keyExtractor={(item, index) => index.toString()}
@@ -88,7 +93,8 @@ export default function App() {
                 <TouchableOpacity style={homeStyles.gratitudeItem} onPress={() => navigation.navigate('Detalhamento', {
                   id: item.id,
                   title: item.title,
-                  description: item.description
+                  description: item.description,
+                  date: item.date
                 })}>
                   <View style={homeStyles.VStack}> 
                       <Text style= {homeStyles.gratitudeTitle}>{item.title}</Text>
@@ -100,10 +106,13 @@ export default function App() {
                       name='chevron.right'
                   />
                 </TouchableOpacity>
-                : null
+                : 
+                null
               )}
             /> : 
-                <Text style={homeStyles.noGratitudeYet}>Salve a sua primeira gratidão 😉</Text>
+              <View style={homeStyles.noGratitudeYet}>
+                <Text>Adicione a sua primeira gratidão 😉</Text>
+              </View>
             }
 
             
@@ -206,10 +215,6 @@ const homeStyles = StyleSheet.create({
     tintColor: 'gray'
   },
 
-  noGratitudeYet : {
-    position: 'absolute',
-  },
-
   search: {
     backgroundColor: '#e0e0e0',
     height: 50,
@@ -242,5 +247,11 @@ const homeStyles = StyleSheet.create({
     borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center'
+  },
+
+  noGratitudeYet: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 1
   }
 });

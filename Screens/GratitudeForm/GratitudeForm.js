@@ -3,11 +3,13 @@ import { useNavigation } from '@react-navigation/native'
 import { useState } from 'react';
 import { SymbolView } from 'expo-symbols';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatePicker from 'react-native-ui-datepicker'
 
 export default function App() {
     const navigation = useNavigation();
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
+    const [date, setDate] = useState(new Date())
 
     const saveGratitude = async () => {
       if (title == "") {
@@ -16,11 +18,18 @@ export default function App() {
       }
 
         try {
+
           const listaString = await AsyncStorage.getItem('@gratitudes');
           const listaJSON =  listaString != null ? JSON.parse(listaString) : [];
-          const novaLista = [...listaJSON, {"id": listaJSON.length, "title" : title, "description" : description}]
+          const novaLista = [...listaJSON, {
+            "id": listaJSON.length, 
+            "title" : title, 
+            "description" : description,
+            "date" : `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`
+          }]
           const novaListaStringada = JSON.stringify(novaLista); 
           await AsyncStorage.setItem('@gratitudes', novaListaStringada);
+          console.log(novaListaStringada)
           navigation.goBack()
         } catch (error) {
           return [];
@@ -48,6 +57,12 @@ export default function App() {
                 multiline={true}
                 numberOfLines={4}
                 placeholder='Isso me fez grato porque...'
+            />
+
+            <DatePicker 
+              date={date}
+              onChange={(newValue) => {setDate(newValue.date)}}
+              mode='single'
             />
             
             <TouchableOpacity style={formStyles.buttonConfirm} onPress={saveGratitude}>
@@ -92,7 +107,7 @@ const formStyles = StyleSheet.create({
   },
 
   textArea: {
-    paddingHorizontal: 10,
+    padding: 10,
     marginHorizontal: 20,
     marginVertical: 10,
     height: 100,
@@ -121,5 +136,10 @@ const formStyles = StyleSheet.create({
     textAlign: 'right',
     paddingHorizontal: 20,
     fontSize: 10,
+  },
+  datePicker: {
+    width: 100,
+    height: 100,
+    backgroundColor: 'black'
   }
 });
